@@ -33,7 +33,7 @@ public:
         , count(params.count)
         , procedure_codes(params.procedure_codes) {
 
-        prepare(params.file_name, params.words_name);
+        prepare_multiple(params.file_name, params.words_name);
     }
 
     bool operator()() {
@@ -281,7 +281,7 @@ public:
         std::puts("");
         std::puts("Parameters:");
         std::puts("");
-        std::puts("  file      - arbitrary file");
+        std::puts("  file      - lines of the file will be scanned to match every words");
         std::puts("  words     - list of words in separate lines");
         std::puts("  count     - repeat count (optional, default = 10)");
         std::puts("  procedure - letter(s) from square brackets (by default all functions are checked)");
@@ -306,10 +306,11 @@ private:
 
         auto k = count;
         while (k != 0) {
-            for (const auto& word: words) {
-                result += find(file, word);
-            }
-
+	    for (const auto& line: lines) {
+                for (const auto& word: words) {
+                    result += find(line, word);
+                }
+	    }
             k--;
         }
 

@@ -1,0 +1,17 @@
+&ansdomain=
+&authMethod=
+&bn=
+&bti=
+&eactn=
+&es=
+&gf=
+&pageci=
+&pagedtl=
+&rq=
+&sQr=
+&sgnChannelType=
+&sgnFastFYPReset=
+&sgnStatus=
+&sgnTabClick=
+&type=
+&uid=

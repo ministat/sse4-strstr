@@ -3,7 +3,7 @@ class ApplicationBase {
 protected:
     std::string file;
     std::vector<std::string> words;
-
+    std::vector<std::string> lines;
 public:
     class Error final {
     public:
@@ -20,6 +20,12 @@ public:
         load_words(words_name);
     }
 
+    void prepare_multiple(const std::string& file_name, const std::string& words_name) {
+
+        prepare(file_name, words_name);
+	load_lines(file_name);
+    }
+
 private:
     void load_text(const std::string& path) {
 
@@ -34,7 +40,8 @@ private:
         rewind(f);
 
         char* buffer = new char[size];
-        fread(buffer, size, 1, f);
+        if (fread(buffer, size, 1, f) != 1) {
+	}
         buffer[size] = 0;
         fclose(f);
 
@@ -43,6 +50,28 @@ private:
         delete[] buffer;
     }
 
+    void load_lines(const std::string& path) {
+
+        char buffer[655350];
+
+        FILE* f = fopen(path.c_str(), "rt");
+        if (f == nullptr) {
+            throw_errno(path);
+        }
+
+        while (fgets(buffer, sizeof(buffer), f) != NULL) {
+            const auto len = strlen(buffer);
+            if (buffer[len - 1] == '\n') {
+                buffer[len - 1] = 0;
+                if (len == 1) // skip empty strings
+                    continue;
+            }
+
+            lines.push_back(buffer);
+	}
+
+        fclose(f);
+    }
 
     void load_words(const std::string& path) {
 
@@ -53,9 +82,7 @@ private:
             throw_errno(path);
         }
 
-        while (!feof(f)) {
-            fgets(buffer, sizeof(buffer), f);
-
+        while (fgets(buffer, sizeof(buffer), f) != NULL) {
             const auto len = strlen(buffer);
             if (buffer[len - 1] == '\n') {
                 buffer[len - 1] = 0;
@@ -64,7 +91,7 @@ private:
             }
 
             words.push_back(buffer);
-        }
+	}
 
         fclose(f);
     }
